@@ -682,10 +682,23 @@ impl RendezvousMediator {
         let pk = Config::get_key_pair().1;
         let uuid = hbb_common::get_uuid();
         let id = Config::get_id();
+        let mut username = Config::get_option(OPTION_PRESET_DEVICE_USERNAME);
+        if username.is_empty() {
+            username = crate::platform::get_active_username();
+        }
+        if username.is_empty() {
+            username = crate::username();
+        }
+        let mut hostname = Config::get_option(OPTION_PRESET_DEVICE_NAME);
+        if hostname.is_empty() {
+            hostname = crate::hostname();
+        }
         msg_out.set_register_pk(RegisterPk {
             id,
             uuid: uuid.into(),
             pk: pk.into(),
+            username,
+            hostname,
             no_register_device: Config::no_register_device(),
             ..Default::default()
         });
